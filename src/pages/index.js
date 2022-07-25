@@ -3,24 +3,24 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 
 export default function Home() {
-  
   const baseURL = "https://doar-computador-api.herokuapp.com/";
-  const [alive, setAlive] = useState(null);
+  const [alive, setAlive] = useState([]);
 
   useEffect(() => {
-    axios.get(baseURL).then((response) => {
-      setAlive(response.data);
+    axios.get(baseURL).then(({ data }) => {
+      setAlive(data.alive);
     });
   }, []);
 
   const resposta = () => {
-    if (alive) {
+    if (alive === true) {
       return <p>API online</p>;
     }
-    if (!alive) {
+    if (alive === false) {
+
       return <p>API offline</p>;
     }
-  };  
+  };
 
   return (
     <div>
