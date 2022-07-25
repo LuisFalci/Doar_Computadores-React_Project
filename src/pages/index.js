@@ -17,11 +17,10 @@ export default function Home() {
       return <p>API online</p>;
     }
     if (alive === false) {
-
-      return <p>API offline</p>;
+      return <p>API offline</p>
     }
   };
-
+  
   return (
     <div>
       <h1>Doação de computadores usados</h1>
