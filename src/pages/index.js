@@ -1,9 +1,10 @@
 // import styles from "../styles/Home.module.css";
 import axios from "axios";
-import { useState, useEffect } from "react";
-import DeviceForm from "../components/DeviceForm";
+import { useState, useEffect, useRef } from "react";
 
 export default function Home() {
+  const [messageError, setMessageError] = useState("");
+  const ref = useRef(null);
   const [page, setPage] = useState(0);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -15,46 +16,90 @@ export default function Home() {
   const [number, setNumber] = useState("");
   const [complement, setComplement] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
+  const [deviceQuantity, setDeviceQuantity] = useState(1);
 
-  const [address, setAddress] = useState("");
-  const [deviceQuantity, setDeviceQuantity] = useState("");
-
+  // Step 1 (address)
   const corrigeCep = (e) => {
-    const number = e.target.value.replace(/\D/g, "");
+    const number = e.target.value.replace(/[^\d,.]+|[.,](?=.*[,.])/g, "");
     setZip(number);
   };
 
   const buscarCep = async () => {
+    setMessageError("");
     if (zip.length === 8) {
-      return axios
+      axios
         .get(`https://viacep.com.br/ws/${zip}/json`)
         .then(({ data }) => {
+          if (data.erro === "true") {
+            setMessageError("Cep não encontrado");
+            return messageError;
+          }
           setCity(data.localidade);
           setState(data.uf);
           setstreetAddress(data.logradouro);
           setNeighborhood(data.bairro);
+          setMessageError("");
+          ref.current.focus();
+        })
+        .catch(function () {
+          setMessageError("Houve algum erro");
         });
     }
+    setMessageError("O CEP precisa de 8 digitos");
   };
 
+  // Step 2 (devices)
+  const [formFields, setFormFields] = useState([{ type: "", condition: "" }]);
+
+  const handleFormChange = (event, index) => {
+    let data = [...formFields];
+    data[index][event.target.name] = event.target.value;
+    setFormFields(data);
+  };
+
+  const submit = (e) => {
+    e.preventDefault();
+  };
+
+  const addFields = (e) => {
+    let numberDevices = parseInt(e);
+
+    // for (let i = 0; i < numberDevices; i++) {
+    let object = {
+      type: "",
+      condition: "",
+    };
+    setFormFields([...formFields, object]);
+    // }
+  };
+
+  const removeFields = (index) => {
+    let data = [...formFields];
+    data.splice(index, 1);
+    setFormFields(data);
+  };
+
+  // Control steps (1 and 2)
+
+  const handleNextStep = () => setPage(1);
+  const handleBackStep = () => setPage(0);
+
+  // Submit
   const handleSubmit = async (e) => {
     axios
       .post("https://doar-computador-api.herokuapp.com/donation", {
-        name: "luis",
-        email: "luis@hotmail.com",
-        phone: 2342342,
-        zip: "luis",
-        city: "luis",
-        state: "luis",
-        streetAddress: "luis",
-        number: 123,
-        complement: "luis",
-        neighborhood: "luis",
-        deviceCount: 2,
-        devices: [
-          { type: "luis", condition: "luis" },
-          { type: "luis", condition: "luis" },
-        ],
+        name: name,
+        email: email,
+        phone: phone,
+        zip: zip,
+        city: city,
+        state: state,
+        streetAddress: streetAddress,
+        number: number,
+        complement: complement,
+        neighborhood: neighborhood,
+        deviceCount: deviceQuantity,
+        devices: formFields,
       })
       .then(function (response) {
         console.log(response);
@@ -62,15 +107,22 @@ export default function Home() {
       .catch(function (error) {
         console.log(error);
       });
-
+    console.log({
+      name: name,
+      email: email,
+      phone: phone,
+      zip: zip,
+      city: city,
+      state: state,
+      streetAddress: streetAddress,
+      number: number,
+      complement: complement,
+      neighborhood: neighborhood,
+      deviceCount: deviceQuantity,
+      devices: formFields,
+    });
     e.preventDefault();
   };
-
-  const handleNextStep = () => setPage(1);
-
-  const handleBackStep = () => setPage(0);
-  
-  console.log({lenght:deviceQuantity});
 
   return (
     <div>
@@ -84,8 +136,9 @@ export default function Home() {
                 type="text"
                 id="name"
                 name="name"
-                defaultValue={name}
+                value={name}
                 onChange={(e) => setName(e.target.value)}
+                required
               />
 
               <label>Email:</label>
@@ -115,15 +168,23 @@ export default function Home() {
                 name="zip"
                 onChange={corrigeCep}
                 onBlur={buscarCep}
-                defaultValue={zip}
+                value={zip}
                 maxLength="8"
               />
+              {messageError != "" && <p>{messageError}</p>}
 
               <label>Cidade:</label>
-              <input type="text" id="city" name="city" defaultValue={city} />
+              <input
+                type="text"
+                id="city"
+                name="city"
+                defaultValue={city}
+                onChange={(e) => setCity(e.target.value)}
+              />
 
               <label>Estado:</label>
-              <input type="text" id="state" name="state" defaultValue={state} />
+              <input type="text" id="state" name="state" defaultValue={state} 
+              onChange={(e) => setState(e.target.value)}/>
 
               <label>Logradouro:</label>
               <input
@@ -131,14 +192,17 @@ export default function Home() {
                 id="streetAddress"
                 name="streetAddress"
                 defaultValue={streetAddress}
+                onChange={(e) => setstreetAddress(e.target.value)}
               />
 
               <label>Numero:</label>
               <input
+                ref={ref}
                 type="text"
                 id="number"
                 name="number"
                 defaultValue={number}
+                onChange={(e) => setNumber(e.target.value)}
               />
 
               <label>Complemento:</label>
@@ -147,6 +211,7 @@ export default function Home() {
                 id="complement"
                 name="complement"
                 defaultValue={complement}
+                onChange={(e) => setComplement(e.target.value)}
               />
 
               <label>Bairro:</label>
@@ -155,6 +220,7 @@ export default function Home() {
                 id="neighborhood"
                 name="neighborhood"
                 defaultValue={neighborhood}
+                onChange={(e) => setNeighborhood(e.target.value)}
               />
             </fieldset>
 
@@ -164,25 +230,28 @@ export default function Home() {
 
         {page === 1 && (
           <>
-            <fieldset>
-              <label>Número de Aparelhos:</label>
-              <input
-                type="number"
-                id="deviceCount"
-                name="deviceCount"
-                min="1"
-                max="999"
-                defaultValue={deviceQuantity}
-                onChange={(e) => setDeviceQuantity(e.target.value)}
-              />
-            </fieldset>
-
-            {
-              Array.from({length:deviceQuantity}).map((_,index) => (
-                <DeviceForm key={index}/>
-              ))
-            }
-                     
+            {formFields.map((form, index) => {
+              return (
+                <fieldset key={index}>
+                  <label>Tipo:</label>
+                  <input
+                    name="type"
+                    onChange={(event) => handleFormChange(event, index)}
+                    value={form.type}
+                  />
+                  <input
+                    name="condition"
+                    onChange={(event) => handleFormChange(event, index)}
+                    value={form.condition}
+                  />
+                  <button onClick={() => removeFields(index)}>
+                    Remover Campo
+                  </button>
+                </fieldset>
+              );
+            })}
+            <button onClick={addFields}>Adicionar Campo</button>
+            <br />
             <button onClick={handleBackStep}>Voltar</button>
             <input type="submit" />
           </>
