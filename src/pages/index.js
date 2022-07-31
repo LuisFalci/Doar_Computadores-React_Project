@@ -94,37 +94,37 @@ export default function Home() {
   const handleBackStep = () => setPage(0);
 
   // Submit
-  // const handleSubmit = async (e) => {
-  //   axios
-  //     .post("https://doar-computador-api.herokuapp.com/donation", {
-  //       name: name,
-  //       email: email,
-  //       phone: phone,
-  //       zip: zip,
-  //       city: city,
-  //       state: state,
-  //       streetAddress: streetAddress,
-  //       number: number,
-  //       complement: complement,
-  //       neighborhood: neighborhood,
-  //       deviceCount: deviceQuantity,
-  //       devices: formFields,
-  //     })
-  //     .then(({ data }) => {
-  //       alert("Formulário enviado com sucesso");
-  //     })
-  //     .catch(function (error) {
-  //       if (error.response.status === 400) {
-  //         alert("Problema com o Formulário, preencha novamente");
-  //       } else {
-  //         alert(
-  //           "Comportamento inesperado do servidor, tente novamente mais tarde..."
-  //         );
-  //       }
-  //     });
+  const handleSubmit = async (e) => {
+    axios
+      .post("https://doar-computador-api.herokuapp.com/donation", {
+        name: name,
+        email: email,
+        phone: phone,
+        zip: zip,
+        city: city,
+        state: state,
+        streetAddress: streetAddress,
+        number: number,
+        complement: complement,
+        neighborhood: neighborhood,
+        deviceCount: deviceQuantity,
+        devices: formFields,
+      })
+      .then(() => {
+        alert("Formulário enviado com sucesso");
+      })
+      .catch(function (error) {
+        if (error.response.status === 400) {
+          alert("Problema com o Formulário, preencha novamente");
+        } else {
+          alert(
+            "Comportamento inesperado do servidor, tente novamente mais tarde..."
+          );
+        }
+      });
 
-  //   e.preventDefault();
-  // };
+    e.preventDefault();
+  };
 
   return (
     <div>
