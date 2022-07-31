@@ -1,30 +1,33 @@
-// import styles from "../styles/Home.module.css";
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 
-export default function Home() {
+const index = () => {
+  // Quantidade de Aparelhos
+  const [deviceQuantity, setDeviceQuantity] = useState(0);
+
+  // Feedback para o usuários
   const [messageError, setMessageError] = useState();
   const [load, setLoad] = useState();
 
   // foco input numero
   const ref = useRef(null);
 
-  // controle das steps
+  // Control steps (1 and 2)
   const [page, setPage] = useState(0);
+  const handleNextStep = () => setPage(1);
+  const handleBackStep = () => setPage(0);
 
+  // states do formulário do usuário
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [phone, setPhone] = useState();
-  const [zip, setZip] = useState();
+  const [zip, setZip] = useState("");
   const [city, setCity] = useState();
   const [state, setState] = useState();
   const [streetAddress, setstreetAddress] = useState();
   const [number, setNumber] = useState();
   const [complement, setComplement] = useState();
   const [neighborhood, setNeighborhood] = useState();
-
-  // quantidade de devices
-  const [deviceQuantity, setDeviceQuantity] = useState(0);
 
   // Step 1 (address)
   const corrigeCep = (e) => {
@@ -60,7 +63,7 @@ export default function Home() {
     }
   };
 
-  // Step 2 (devices)
+  // Step 2 - Formulário Devices
   const [formFields, setFormFields] = useState([]);
 
   const handleFormChange = (event, index) => {
@@ -88,13 +91,7 @@ export default function Home() {
     setFormFields(data);
   };
 
-  // Control steps (1 and 2)
-
-  const handleNextStep = () => setPage(1);
-  const handleBackStep = () => setPage(0);
-
-  // Submit
-  const handleSubmit = async (e) => {
+  const submit = (e) => {
     axios
       .post("https://doar-computador-api.herokuapp.com/donation", {
         name: name,
@@ -124,12 +121,14 @@ export default function Home() {
       });
 
     e.preventDefault();
+    e.preventDefault();
+    console.log(formFields);
   };
 
   return (
     <div>
       <h1>Doação de computadores usados</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={submit}>
         {page === 0 && (
           <>
             <fieldset>
@@ -237,14 +236,9 @@ export default function Home() {
             <button onClick={handleNextStep}>Proximo</button>
           </>
         )}
-
         {page === 1 && (
           <>
-            <fieldset>
-              <h2>Número de dispositivos para doar: {deviceQuantity}</h2>
-              <button onClick={addFields}>Adicionar mais um dispositivo</button>
-            </fieldset>
-
+            <h2>Aparelhos para doação: {deviceQuantity}</h2>
             {formFields.map((forms, index) => {
               return (
                 <div key={index}>
@@ -282,20 +276,27 @@ export default function Home() {
                         Faltam peças, funciona só as vezes ou está quebrado{" "}
                       </option>
                     </select>
-                    <button onClick={() => removeFields(index)}>
+                    <button type="button" onClick={() => removeFields(index)}>
                       Remover Campo
                     </button>
                   </fieldset>
                 </div>
               );
             })}
-            <button onClick={addFields}>Adicionar Campo</button>
+            <button type="button" onClick={addFields}>
+              Adicionar mais um campo
+            </button>
             <br />
             <button onClick={handleBackStep}>Voltar</button>
+            <br />
+            <button type="button" onClick={submit}>
+              Enviar
+            </button>
           </>
         )}
-        <input type="submit" value="Enviar" />
       </form>
     </div>
   );
-}
+};
+
+export default index;
