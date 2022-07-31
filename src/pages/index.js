@@ -91,22 +91,24 @@ const index = () => {
     setFormFields(data);
   };
 
+  // Envio do formulário
   const submit = (e) => {
+    const data={
+      name: name,
+      email: email,
+      phone: phone,
+      zip: zip,
+      city: city,
+      state: state,
+      streetAddress: streetAddress,
+      number: number,
+      complement: complement,
+      neighborhood: neighborhood,
+      deviceCount: deviceQuantity,
+      devices: formFields,
+    }
     axios
-      .post("https://doar-computador-api.herokuapp.com/donation", {
-        name: name,
-        email: email,
-        phone: phone,
-        zip: zip,
-        city: city,
-        state: state,
-        streetAddress: streetAddress,
-        number: number,
-        complement: complement,
-        neighborhood: neighborhood,
-        deviceCount: deviceQuantity,
-        devices: formFields,
-      })
+      .post("https://doar-computador-api.herokuapp.com/donation",data)
       .then(() => {
         alert("Formulário enviado com sucesso");
       })
@@ -121,8 +123,7 @@ const index = () => {
       });
 
     e.preventDefault();
-    e.preventDefault();
-    console.log(formFields);
+    console.log(data);
   };
 
   return (
