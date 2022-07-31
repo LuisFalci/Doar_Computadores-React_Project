@@ -3,28 +3,39 @@ import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 
 export default function Home() {
-  const [messageError, setMessageError] = useState("");
+  const [messageError, setMessageError] = useState();
+  const [load, setLoad] = useState();
+
+  // foco input numero
   const ref = useRef(null);
+
+  // controle das steps
   const [page, setPage] = useState(0);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [zip, setZip] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
-  const [streetAddress, setstreetAddress] = useState("");
-  const [number, setNumber] = useState("");
-  const [complement, setComplement] = useState("");
-  const [neighborhood, setNeighborhood] = useState("");
-  const [deviceQuantity, setDeviceQuantity] = useState(1);
+
+  const [name, setName] = useState();
+  const [email, setEmail] = useState();
+  const [phone, setPhone] = useState();
+  const [zip, setZip] = useState();
+  const [city, setCity] = useState();
+  const [state, setState] = useState();
+  const [streetAddress, setstreetAddress] = useState();
+  const [number, setNumber] = useState();
+  const [complement, setComplement] = useState();
+  const [neighborhood, setNeighborhood] = useState();
+
+  // quantidade de devices
+  const [deviceQuantity, setDeviceQuantity] = useState(0);
 
   // Step 1 (address)
   const corrigeCep = (e) => {
     const number = e.target.value.replace(/[^\d,.]+|[.,](?=.*[,.])/g, "");
     setZip(number);
+    setLoad("");
+    setMessageError("");
   };
 
   const buscarCep = async () => {
+    setLoad("");
     setMessageError("");
     if (zip.length === 8) {
       axios
@@ -44,36 +55,34 @@ export default function Home() {
         .catch(function () {
           setMessageError("Houve algum erro");
         });
+    } else {
+      setMessageError("O CEP precisa de 8 digitos");
     }
-    setMessageError("O CEP precisa de 8 digitos");
   };
 
   // Step 2 (devices)
-  const [formFields, setFormFields] = useState([{ type: "", condition: "" }]);
+  const [formFields, setFormFields] = useState([]);
 
   const handleFormChange = (event, index) => {
     let data = [...formFields];
     data[index][event.target.name] = event.target.value;
     setFormFields(data);
+    console.log(formFields);
   };
 
-  const submit = (e) => {
-    e.preventDefault();
-  };
+  const addFields = () => {
+    setDeviceQuantity(deviceQuantity + 1);
 
-  const addFields = (e) => {
-    let numberDevices = parseInt(e);
-
-    // for (let i = 0; i < numberDevices; i++) {
     let object = {
       type: "",
       condition: "",
     };
+
     setFormFields([...formFields, object]);
-    // }
   };
 
   const removeFields = (index) => {
+    setDeviceQuantity(deviceQuantity - 1);
     let data = [...formFields];
     data.splice(index, 1);
     setFormFields(data);
@@ -85,44 +94,37 @@ export default function Home() {
   const handleBackStep = () => setPage(0);
 
   // Submit
-  const handleSubmit = async (e) => {
-    axios
-      .post("https://doar-computador-api.herokuapp.com/donation", {
-        name: name,
-        email: email,
-        phone: phone,
-        zip: zip,
-        city: city,
-        state: state,
-        streetAddress: streetAddress,
-        number: number,
-        complement: complement,
-        neighborhood: neighborhood,
-        deviceCount: deviceQuantity,
-        devices: formFields,
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    console.log({
-      name: name,
-      email: email,
-      phone: phone,
-      zip: zip,
-      city: city,
-      state: state,
-      streetAddress: streetAddress,
-      number: number,
-      complement: complement,
-      neighborhood: neighborhood,
-      deviceCount: deviceQuantity,
-      devices: formFields,
-    });
-    e.preventDefault();
-  };
+  // const handleSubmit = async (e) => {
+  //   axios
+  //     .post("https://doar-computador-api.herokuapp.com/donation", {
+  //       name: name,
+  //       email: email,
+  //       phone: phone,
+  //       zip: zip,
+  //       city: city,
+  //       state: state,
+  //       streetAddress: streetAddress,
+  //       number: number,
+  //       complement: complement,
+  //       neighborhood: neighborhood,
+  //       deviceCount: deviceQuantity,
+  //       devices: formFields,
+  //     })
+  //     .then(({ data }) => {
+  //       alert("Formulário enviado com sucesso");
+  //     })
+  //     .catch(function (error) {
+  //       if (error.response.status === 400) {
+  //         alert("Problema com o Formulário, preencha novamente");
+  //       } else {
+  //         alert(
+  //           "Comportamento inesperado do servidor, tente novamente mais tarde..."
+  //         );
+  //       }
+  //     });
+
+  //   e.preventDefault();
+  // };
 
   return (
     <div>
@@ -138,7 +140,6 @@ export default function Home() {
                 name="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                required
               />
 
               <label>Email:</label>
@@ -167,10 +168,14 @@ export default function Home() {
                 id="zip"
                 name="zip"
                 onChange={corrigeCep}
-                onBlur={buscarCep}
+                onBlur={() =>
+                  setTimeout(buscarCep, 3000) && setLoad("Carregando")
+                }
                 value={zip}
                 maxLength="8"
               />
+
+              {load === "Carregando" && <p>Carregando</p>}
               {messageError != "" && <p>{messageError}</p>}
 
               <label>Cidade:</label>
@@ -183,8 +188,13 @@ export default function Home() {
               />
 
               <label>Estado:</label>
-              <input type="text" id="state" name="state" defaultValue={state} 
-              onChange={(e) => setState(e.target.value)}/>
+              <input
+                type="text"
+                id="state"
+                name="state"
+                defaultValue={state}
+                onChange={(e) => setState(e.target.value)}
+              />
 
               <label>Logradouro:</label>
               <input
@@ -230,32 +240,61 @@ export default function Home() {
 
         {page === 1 && (
           <>
-            {formFields.map((form, index) => {
+            <fieldset>
+              <h2>Número de dispositivos para doar: {deviceQuantity}</h2>
+              <button onClick={addFields}>Adicionar mais um dispositivo</button>
+            </fieldset>
+
+            {formFields.map((forms, index) => {
               return (
-                <fieldset key={index}>
-                  <label>Tipo:</label>
-                  <input
-                    name="type"
-                    onChange={(event) => handleFormChange(event, index)}
-                    value={form.type}
-                  />
-                  <input
-                    name="condition"
-                    onChange={(event) => handleFormChange(event, index)}
-                    value={form.condition}
-                  />
-                  <button onClick={() => removeFields(index)}>
-                    Remover Campo
-                  </button>
-                </fieldset>
+                <div key={index}>
+                  <fieldset>
+                    <label>Tipo:</label>
+                    <select
+                      name="type"
+                      onChange={(event) => handleFormChange(event, index)}
+                    >
+                      <option value="" selected disabled hidden>
+                        Escolha uma Opção
+                      </option>
+                      <option value="notebook">Notebook </option>
+                      <option value="desktop">Desktop </option>
+                      <option value="netbook">Netbook </option>
+                      <option value="screen">Monitor </option>
+                      <option value="printer">Impressora </option>
+                      <option value="scanner">Scanner </option>
+                    </select>
+                    <label>Condição:</label>
+                    <select
+                      name="condition"
+                      onChange={(event) => handleFormChange(event, index)}
+                    >
+                      <option value="" selected disabled hidden>
+                        Escolha uma Opção
+                      </option>
+                      <option value="working">
+                        Tem todas as partes, liga e funciona normalmente{" "}
+                      </option>
+                      <option value="notWorking">
+                        Tem todas as partes, mas não liga mais{" "}
+                      </option>
+                      <option value="broken">
+                        Faltam peças, funciona só as vezes ou está quebrado{" "}
+                      </option>
+                    </select>
+                    <button onClick={() => removeFields(index)}>
+                      Remover Campo
+                    </button>
+                  </fieldset>
+                </div>
               );
             })}
             <button onClick={addFields}>Adicionar Campo</button>
             <br />
             <button onClick={handleBackStep}>Voltar</button>
-            <input type="submit" />
           </>
         )}
+        <input type="submit" value="Enviar" />
       </form>
     </div>
   );
