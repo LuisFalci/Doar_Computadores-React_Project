@@ -1,7 +1,10 @@
 {
   "name": "primeira_etapa",
-  "version": "0.1.0",
-  "private": false,
+  "description": "a really cool app",
+  "version": "1.0.0",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
