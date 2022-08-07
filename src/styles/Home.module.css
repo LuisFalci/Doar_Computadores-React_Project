@@ -1,0 +1,84 @@
+.home {
+  text-align: center;
+}
+
+.home h2 {
+  font-size: 2.2em;
+}
+
+.home p {
+  color: #aaa;
+  margin-bottom: 2em;
+}
+
+#alert_h3 {
+  color: red;
+  text-align: center;  
+}
+#alert {
+  color: red;
+  text-align: justify;  
+}
+
+#card {
+  display: block;
+  border: 1px solid rgb(47, 44, 44);
+  background-color: rgb(243, 234, 234);
+  border: 2px solid #0f100f;
+  border-radius: 15px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+#card label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
+  color: rgb(21, 5, 5);
+  padding: 10px;
+}
+#card select {
+  max-width: 200px;
+  min-width: 200px;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 1px solid rgb(225, 220, 220);
+  border-radius: 16px;
+  padding: 0.8em 0em;
+  background-color: white;
+  margin-bottom: 15px;
+}
+#card button {
+  background-color: #060404;
+  border: none;
+  color: white;
+  padding: 5px 5px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 16px;
+  font-family: "Montserrat", sans-seri;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+
+@media (max-width: 600px) {
+  #card select {
+    max-width: 70%;
+    min-width: 70%;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 1px solid rgb(225, 220, 220);
+    border-radius: 16px;
+    padding: 0.8em 0em;
+    background-color: white;
+   
+  }
+  #card button {
+    max-width: 50%;
+    min-width: 50%;
+    font-size: 0.9em;
+  }
+}

@@ -1,0 +1,46 @@
+const InstitutionsList=[{
+    name: "Instituto Federal de Andrelândia",
+    city: "Andrelândia",
+    neighborhood: "Alto do Paraibuna",
+    website: "https://www.ifsudestea.edu.br",
+    instagram: "https://www.instagram.com/ifsuda",
+    facebook : "https://www.facebook.com/ifsudestea",
+    whatsapp: "https://api.whatsapp.com/send?phone=5532990909080",
+  },{
+    name: "Instituto Federal de Valença",
+    city: "Valença",
+    neighborhood: "Vale das Capivaras",
+    website: "www.ifsudestefv.edu.br",
+    instagram: "https://www.instagram.com/ifsudv",
+    facebook : "https://www.facebook.com/ifsudestefv",
+    whatsapp: "https://api.whatsapp.com/send?phone=5532990909070",
+  }, 
+  {
+    name: "Instituto Federal de Petrópolis",
+    city: "Petrópolis",
+    neighborhood: "Reino dos Anões",
+    website: "https://www.ifsudestep.edu.br",
+    instagram: "https://www.instagram.com/ifsudp",
+    facebook : "https://www.facebook.com/ifsudestep",
+    whatsapp: "https://api.whatsapp.com/send?phone=5532990909060",
+  }, 
+  {
+    name: "Instituto Federal de Porto Real",
+    city: "Porto Real",
+    neighborhood: "Tão Tão Distante",
+    website: "https://www.ifsudestepr.edu.br",
+    instagram: "https://www.instagram.com/ifsudpr",
+    facebook : "https://www.facebook.com/ifsudestepr",
+    whatsapp: "https://api.whatsapp.com/send?phone=5532990909050",
+  }, 
+  {
+    name: "Instituto Federal de Magé",
+    city: "Magé",
+    neighborhood: "Orlando Cruz",
+    website: "https://www.ifsudestem.edu.br",
+    instagram: "https://www.instagram.com/ifsudm",
+    facebook : "https://www.facebook.com/ifsudestem",
+    whatsapp: "https://api.whatsapp.com/send?phone=5532990909090",
+  }, ]
+
+export default InstitutionsList

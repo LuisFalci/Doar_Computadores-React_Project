@@ -1,0 +1,60 @@
+#container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 20%;
+
+  background-color: "red";
+}
+
+#cards {
+  width: 20%;
+  display: inline-block;
+  border: 1px solid rgb(47, 44, 44);
+  background-color: rgb(205, 205, 205);
+  border: 2px solid #0f100f;
+  border-radius: 15px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+#cards a {
+  text-decoration: none;
+}
+
+/* .institution ul {
+  list-style: none;
+}
+
+.institution li {
+  margin-bottom: 1em;
+  font-size: 1em;
+  display: flex;
+} */
+
+@media (max-width: 600px) {
+  #container {
+    margin-left: 0vh;
+    margin-right: 0vh;
+    width: 100%;
+  
+  }
+  #cards {
+    width: 45%;
+    display: block;
+    overflow: hidden;
+  }
+}
+@media (max-width: 400px) {
+  #container {
+    margin-left: 0vh;
+    margin-right: 0vh;
+    width: 100%;
+  
+  }
+  #cards {
+    width: 90%;
+    display: block;
+    overflow: hidden;
+  }
+}
