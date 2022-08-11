@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import Input from "../components/form/Input";
 
 
+
 export default function Home() {
   // Quantidade de Aparelhos
   const [deviceQuantity, setDeviceQuantity] = useState(1);
